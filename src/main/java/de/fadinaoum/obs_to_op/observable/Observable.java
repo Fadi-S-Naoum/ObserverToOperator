@@ -6,21 +6,18 @@ import java.util.List;
 import de.fadinaoum.obs_to_op.Subscription;
 import de.fadinaoum.obs_to_op.observer.Observer;
 
-public class Observable {
-	private final OnSubscribe onSubscribe;
-	private final List<Subscription>  subscriptions = new ArrayList<>();
+public class Observable<T> {
+	private final OnSubscribe<T> onSubscribe;
 
-	private Observable(OnSubscribe onSubscribe) {
+	private Observable(OnSubscribe<T> onSubscribe) {
 		this.onSubscribe = onSubscribe;
 	}
 
-	public static Observable create(OnSubscribe onSubscribe) {
-		return new Observable(onSubscribe);
+	public static <T> Observable<T> create(OnSubscribe<T> onSubscribe) {
+		return new Observable<T>(onSubscribe);
 	}
 
-	public <T> Subscription subscribe(Observer<? super T> observer) {
-		Subscription subscription = onSubscribe.call(observer);
-		subscriptions.add(subscription);
-		return subscription;
+	public Subscription subscribe(Observer<? super T> observer) {
+		return onSubscribe.call(observer);
 	}
 }
